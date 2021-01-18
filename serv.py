@@ -18,6 +18,20 @@ def query_from_db(keys=['name','amount'],sort=None,reverse=False):
   data = [ [x[k] for k in keys] for x in data ]
   return data
 
+def get_name_count(name):
+  data = read_db()
+  for entry in data:
+    if entry['name'] == name:
+      return entry['amount']
+  return 0
+
+def count_all_names():
+  data = read_db()
+  count = 0
+  for entry in data:
+    count += entry['amount']
+  return count
+
 @app.route('/api/names', methods=['GET'])
 def names_api():
   # Defaults
@@ -52,9 +66,20 @@ def names_api():
 
   return data, 200
 
-@app.route('/api/names/count')
+@app.route('/api/names/count',methods=['GET'])
 def count_api():
-  return "Not Implemented",501
+  if len(request.args) > 1:
+    return "Request has too many keywords. Only 'name' is allowed.",200
+  if 'name' not in request.args:
+    return "Required keyword missing or invalid: 'name'.",200
 
+  arg = request.args['name']
+  if arg in ['*','']:
+    data = count_all_names()
+  else:
+    data = get_name_count(arg)
+
+  return str(data),200
+  
 if __name__ == '__main__':
   app.run()
