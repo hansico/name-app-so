@@ -11,7 +11,7 @@ def read_db():
   f.close()
   return data
 
-def query_from_db(keys=['name','amount'],sort=None,reverse=False):
+def query_from_db(keys=['name','amount'], sort=None, reverse=False):
   data = read_db()
   if sort:
     data.sort(key=lambda x: x[sort], reverse=reverse)
@@ -69,17 +69,17 @@ def names_api():
 @app.route('/api/names/count',methods=['GET'])
 def count_api():
   if len(request.args) > 1:
-    return "Request has too many keywords. Only 'name' is allowed.",200
+    return "Request has too many keywords. Only 'name' is allowed.", 200
   if 'name' not in request.args:
-    return "Required keyword missing or invalid: 'name'.",200
+    return "Required keyword missing or invalid: 'name'.", 200
 
-  arg = request.args['name']
-  if arg in ['*','']:
+  val = request.args['name']
+  if val in ['*','']:
     data = count_all_names()
   else:
-    data = get_name_count(arg)
+    data = get_name_count(val)
 
-  return str(data),200
+  return str(data), 200
   
 if __name__ == '__main__':
   app.run()
