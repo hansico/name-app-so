@@ -71,10 +71,12 @@ def count_api():
   if len(request.args) > 1:
     return "Request has too many keywords. Only 'name' is allowed.", 200
   if 'name' not in request.args:
-    return "Required keyword missing or invalid: 'name'.", 200
+    return "Required keyword missing: 'name'.", 200
 
   val = request.args['name']
-  if val in ['*','']:
+  if val == "":
+    return "Please, give value for parameter name. Use * to sum up all names.", 200
+  if val == '*':
     data = count_all_names()
   else:
     data = get_name_count(val)
