@@ -11,11 +11,11 @@ def read_db():
   f.close()
   return data
 
-def query_from_db(keys=['name','amount'], sort=None, reverse=False):
+def query_from_db(keys=['name'], sort=None, reverse=False):
   data = read_db()
   if sort:
     data.sort(key=lambda x: x[sort], reverse=reverse)
-  data = [ [x[k] for k in keys] for x in data ]
+  data = { 'values': [ { k: x[k] for k in keys } for x in data] }
   return data
 
 def get_name_count(name):
@@ -62,7 +62,6 @@ def names_api():
       reverse = request.args['reverse'] == 'True'
     
   data = query_from_db(keys=keys,sort=sort,reverse=reverse)
-  data = str(data)
 
   return data, 200
 
